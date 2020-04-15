@@ -126,6 +126,17 @@ open class RAGTextField: UITextField {
         }
     }
     
+    /// Layout direction to be set differently from the device's.
+    /// - Note: When setting the direction to `.rightToLeft`, you must ensure your app has forcedRightToLeft semantics applied. The palceholder view is a custom view, therefore does not follow regular Text input conformance to language direction.
+    open var layoutDirection: UIUserInterfaceLayoutDirection = .leftToRight {
+        didSet {
+            placeholderView.layoutDirection = layoutDirection
+            
+            placeholderConstraints.clearHorizontalConstraints()
+            setNeedsUpdateConstraints()
+        }
+    }
+    
     // MARK: Hint
     
     private let hintLabel = UILabel()
@@ -378,7 +389,7 @@ open class RAGTextField: UITextField {
     /// Swaps the left and right text padding values if the current user interface direction is right-to-left.
     private var userInterfaceDirectionAwareTextPadding: UIEdgeInsets {
         
-        if UIApplication.shared.userInterfaceLayoutDirection == .leftToRight {
+        if layoutDirection == .leftToRight {
             return textPadding
         }
         
@@ -429,7 +440,7 @@ open class RAGTextField: UITextField {
     /// Whether the left view is displayed to the left or to the right of the text.
     private var leftViewPosition: HorizontalPosition {
         
-        if UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft {
+        if layoutDirection == .rightToLeft {
             return .right
         } else {
             return .left
@@ -457,7 +468,7 @@ open class RAGTextField: UITextField {
     /// Whether the left view is displayed to the left or to the right of the text.
     private var rightViewPosition: HorizontalPosition {
         
-        if UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft {
+        if layoutDirection == .rightToLeft {
             return .left
         } else {
             return .right
@@ -491,7 +502,7 @@ open class RAGTextField: UITextField {
     /// Whether the clear button is displayed to the left or to the right of the text.
     private var clearButtonPosition: HorizontalPosition {
         
-        if UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft {
+        if layoutDirection == .rightToLeft {
             return .left
         } else {
             return .right
@@ -975,10 +986,14 @@ open class RAGTextField: UITextField {
         
         let constraint: NSLayoutConstraint
         
-        switch (textAlignment, UIApplication.shared.userInterfaceLayoutDirection) {
-        case (.left, .leftToRight), (.right, .rightToLeft), (.justified, _), (.natural, _):
+        switch (textAlignment, layoutDirection) {
+        case (.left, .leftToRight),
+             (.right, .rightToLeft),
+             (.justified, _),
+             (.natural, _):
             constraint = placeholderView.leadingAnchor.constraint(equalTo: placeholderContainerView.leadingAnchor)
-        case (.left, .rightToLeft), (.right, .leftToRight):
+        case (.left, .rightToLeft),
+             (.right, .leftToRight):
             constraint = placeholderContainerView.trailingAnchor.constraint(equalTo: placeholderView.trailingAnchor)
         case (.center, _):
             constraint = placeholderView.centerXAnchor.constraint(equalTo: placeholderContainerView.centerXAnchor)
@@ -1002,10 +1017,14 @@ open class RAGTextField: UITextField {
     
     private func normalHorizontalPlaceholderConstraintConstant(for textAlignment: NSTextAlignment) -> CGFloat {
         
-        switch (textAlignment, UIApplication.shared.userInterfaceLayoutDirection) {
-        case (.natural, .leftToRight), (.justified, .leftToRight), (.left, _):
+        switch (textAlignment, layoutDirection) {
+        case (.natural, .leftToRight),
+             (.justified, .leftToRight),
+             (.left, _):
             return computeLeftInsetToText()
-        case (.natural, .rightToLeft), (.justified, .rightToLeft), (.right, _):
+        case (.natural, .rightToLeft),
+             (.justified, .rightToLeft),
+             (.right, _):
             return computeRightInsetToText()
         case (.center, _):
             return 0.0
@@ -1024,10 +1043,14 @@ open class RAGTextField: UITextField {
         
         let constraint: NSLayoutConstraint
         
-        switch (textAlignment, UIApplication.shared.userInterfaceLayoutDirection) {
-        case (.left, .leftToRight), (.right, .rightToLeft), (.justified, _), (.natural, _):
+        switch (textAlignment, layoutDirection) {
+        case (.left, .leftToRight),
+             (.right, .rightToLeft),
+             (.justified, _),
+             (.natural, _):
             constraint = placeholderView.leadingAnchor.constraint(equalTo: placeholderContainerView.leadingAnchor)
-        case (.left, .rightToLeft), (.right, .leftToRight):
+        case (.left, .rightToLeft),
+             (.right, .leftToRight):
             constraint = placeholderContainerView.trailingAnchor.constraint(equalTo: placeholderView.trailingAnchor)
         case (.center, _):
             constraint = placeholderView.centerXAnchor.constraint(equalTo: placeholderContainerView.centerXAnchor)

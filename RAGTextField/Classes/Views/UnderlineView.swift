@@ -142,6 +142,12 @@ open class UnderlineView: UIView {
         }
     }
     
+    /// Returns the layout direction, if the textfield object is of `RAGTextfield`, returns its direction. Otherwise, returns the device's direction.
+    var layoutDirection: UIUserInterfaceLayoutDirection {
+        guard let textField = textField as? RAGTextField else { return UIApplication.shared.userInterfaceLayoutDirection }
+        return textField.layoutDirection
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -246,13 +252,13 @@ open class UnderlineView: UIView {
         case .expandsFromCenter, .notAnimated:
             leadingConstraint?.isActive = false
             trailingConstraint?.isActive = false
-        case .expandsFromRight where UIApplication.shared.userInterfaceLayoutDirection == .leftToRight:
+        case .expandsFromRight where layoutDirection == .leftToRight:
             leadingConstraint?.isActive = false
             trailingConstraint?.isActive = true
         case .expandsFromRight:
             leadingConstraint?.isActive = true
             trailingConstraint?.isActive = false
-        case .expandsFromLeft where UIApplication.shared.userInterfaceLayoutDirection == .leftToRight:
+        case .expandsFromLeft where layoutDirection == .leftToRight:
             leadingConstraint?.isActive = true
             trailingConstraint?.isActive = false
         case .expandsFromLeft:

@@ -73,9 +73,15 @@ final class PlaceholderView: UIView {
         }
     }
     
+    var layoutDirection: UIUserInterfaceLayoutDirection = .leftToRight {
+        didSet {
+            updateAnchorPoint(of: label, textAlignment: textAlignment)
+        }
+    }
+    
     private func updateAnchorPoint(of view: UIView, textAlignment: NSTextAlignment) {
         
-        switch (textAlignment, UIApplication.shared.userInterfaceLayoutDirection) {
+        switch (textAlignment, layoutDirection) {
         case (.natural, .leftToRight), (.justified, .leftToRight), (.left, _):
             view.layer.anchorPoint = CGPoint(x: 0.0, y: 0.5)
         case (.natural, .rightToLeft), (.justified, .rightToLeft), (.right, _):
